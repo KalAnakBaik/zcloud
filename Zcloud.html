@@ -428,11 +428,14 @@ function googleReady() {
 }
 
 function connectGoogle() {
-  if (GOOGLE_CLIENT_ID === "254882719559-hgc0r2qnks7tqc1ae2fmavap643f61am.apps.googleusercontent.com") {
-    loginStatus.textContent =
-      "Client ID belum diisi. Masukkan Client ID Google Cloud.";
-    return;
-  }
+  if (
+  !GOOGLE_CLIENT_ID ||
+  GOOGLE_CLIENT_ID === "254882719559-hgc0r2qnks7tqc1ae2fmavap643f61am.apps.googleusercontent.com"
+) {
+  loginStatus.textContent =
+    "Client ID belum diisi. Masukkan Client ID Google Cloud.";
+  return;
+}
 
   if (!gisReady || !window.google?.accounts?.oauth2) {
     loginStatus.textContent =
