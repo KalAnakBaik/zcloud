@@ -1,10 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#080d19">
-<title>ZCloud — Your Personal Cloud</title>
+<title>ZCloud — Personal Cloud</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root {
   --bg:#080d19;
@@ -14,236 +16,111 @@
   --text:#edf3ff;
   --muted:#8494ae;
   --blue:#438cff;
-  --cyan:#41d5e9;
 }
-* {box-sizing:border-box}
-body {
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Inter,system-ui,Arial,sans-serif;
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{min-height:100dvh;display:flex}
+.sidebar{width:245px;flex-shrink:0;background:#0b1322;border-right:1px solid var(--border);padding:26px 17px}
+.logo{font-size:25px;font-weight:850;margin:0 0 36px 9px;letter-spacing:-1px}
+.logo span,.mobile-brand span{color:var(--blue)}
+.upload,.connect{
+  width:100%;border:0;padding:14px;border-radius:12px;color:white;
+  font-weight:750;background:linear-gradient(110deg,#367cff,#655cf5);
 }
-button,input {font:inherit}
-button {cursor:pointer}
-.app {min-height:100dvh;display:flex}
-.sidebar {
-  width:245px;
-  flex-shrink:0;
-  background:#0b1322;
-  border-right:1px solid var(--border);
-  padding:26px 17px;
+.nav-title{color:var(--muted);font-size:10px;letter-spacing:1.6px;margin:27px 10px 11px}
+.nav{display:flex;align-items:center;gap:13px;width:100%;padding:13px;margin:4px 0;border:0;border-radius:10px;background:transparent;color:#aebbd0;text-align:left}
+.nav.active,.nav:hover{background:#1a2b47;color:white}
+.storage{margin-top:35px;padding:15px;background:var(--surface);border:1px solid var(--border);border-radius:13px}
+.storage small{color:var(--muted)}
+.bar{height:7px;background:#283952;border-radius:9px;margin:12px 0;overflow:hidden}
+.bar div{height:100%;width:0;background:var(--blue)}
+main{min-width:0;flex:1}
+header{height:76px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--border)}
+.search-wrap{flex:1;max-width:440px;position:relative}
+.search{width:100%;padding:12px 15px 12px 40px;color:white;background:var(--surface);border:1px solid var(--border);border-radius:11px;outline:none}
+.search:focus{border-color:var(--blue)}
+.search-icon{position:absolute;left:14px;top:10px;color:var(--muted)}
+.profile{width:39px;height:39px;display:grid;place-items:center;border-radius:50%;background:#1d3455;color:#8dc1ff;font-weight:800}
+.content{max-width:1250px;margin:auto;padding:34px}
+.welcome{display:flex;align-items:center;justify-content:space-between;gap:15px}
+h1{font-size:29px;letter-spacing:-.8px;margin:0 0 7px}
+.muted{color:var(--muted);font-size:13px}
+.date{color:var(--muted);font-size:12px}
+.connection{
+  margin-top:24px;padding:17px;background:var(--surface);
+  border:1px solid var(--border);border-radius:14px;
 }
-.logo {font-size:25px;font-weight:850;margin:0 0 36px 9px;letter-spacing:-1px}
-.logo span {color:var(--blue)}
-.upload {
-  width:100%;
-  border:0;
-  padding:14px;
-  border-radius:12px;
-  color:white;
-  font-weight:750;
-  background:linear-gradient(110deg,#367cff,#655cf5);
-  box-shadow:0 7px 22px #347cff30;
+.connection-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.connection-info{min-width:0}
+.connection-info strong{font-size:14px}
+.connection-info p{font-size:12px;color:var(--muted);margin:5px 0 0}
+.connect{width:auto;padding:11px 17px;white-space:nowrap;font-size:12px}
+.status{font-size:12px;color:var(--muted);margin-top:12px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px}
+.stat{min-width:0;padding:20px;border:1px solid var(--border);border-radius:15px;background:linear-gradient(145deg,#14223a,#101827)}
+.stat-top{display:flex;align-items:center;justify-content:space-between}
+.stat-icon{width:37px;height:37px;display:grid;place-items:center;border-radius:11px;background:#243d60}
+.number{font-size:25px;font-weight:800;margin-top:15px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:37px 0 17px}
+.section-head h2{font-size:18px;margin:0}
+.section-head span{font-size:12px;color:var(--muted)}
+.files{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.file{min-width:0;padding:17px;border:1px solid var(--border);border-radius:15px;background:var(--surface);transition:.18s}
+.file:hover{background:var(--surface2);border-color:#477fc7}
+.file-icon{width:47px;height:47px;display:grid;place-items:center;border-radius:13px;background:#1c2e49;font-size:24px;margin-bottom:17px}
+.file-name{font-size:13px;font-weight:700;overflow-wrap:anywhere}
+.file-meta{font-size:11px;color:var(--muted);margin-top:7px}
+.empty{grid-column:1/-1;text-align:center;padding:45px 15px;color:var(--muted);border:1px dashed var(--border);border-radius:15px}
+#fileInput{display:none}
+.mobile-nav{display:none}
+.mobile-brand{display:none}
+@media(max-width:950px){
+  .sidebar{width:205px}
+  .content{padding:27px}
+  .files{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
-.nav-title {
-  color:var(--muted);
-  font-size:10px;
-  letter-spacing:1.6px;
-  margin:27px 10px 11px;
+@media(max-width:650px){
+  .app{display:block;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+  .sidebar{display:none}
+  header{height:65px;padding:0 17px;position:sticky;top:0;z-index:5;background:#080d19ed;backdrop-filter:blur(14px)}
+  .mobile-brand{display:block;font-weight:850;font-size:21px;letter-spacing:-1px}
+  .search-wrap{max-width:none;flex:1}
+  .search{padding:10px 10px 10px 34px;font-size:12px}
+  .search-icon{left:11px;top:9px}
+  .profile{width:35px;height:35px;flex-shrink:0}
+  .content{padding:25px 17px}
+  .welcome{align-items:flex-start}
+  h1{font-size:23px}
+  .welcome .muted{font-size:12px}
+  .date{display:none}
+  .connection{padding:14px}
+  .connection-row{align-items:flex-start;flex-direction:column}
+  .connect{width:100%}
+  .stats{display:flex;overflow-x:auto;gap:11px;margin:24px -17px 0;padding:0 17px 7px;scrollbar-width:none}
+  .stats::-webkit-scrollbar{display:none}
+  .stat{min-width:145px;padding:15px}
+  .stat-icon{width:32px;height:32px;font-size:14px}
+  .number{font-size:21px;margin-top:13px}
+  .stat .muted{font-size:11px}
+  .section-head{margin:27px 0 14px}
+  .section-head h2{font-size:17px}
+  .files{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+  .file{padding:13px;border-radius:13px}
+  .file-icon{width:40px;height:40px;font-size:21px;margin-bottom:13px}
+  .file-name{font-size:12px}
+  .file-meta{font-size:10px}
+  .mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:10;padding:10px 8px calc(10px + env(safe-area-inset-bottom));background:#101a2cf5;border-top:1px solid var(--border);backdrop-filter:blur(18px);justify-content:space-around}
+  .mobile-nav button{display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:transparent;color:var(--muted);font-size:10px;min-width:52px}
+  .mobile-nav button b{font-size:19px;font-weight:500}
+  .mobile-nav button.active{color:#78adff}
+  .mobile-nav .add{width:43px;height:43px;margin-top:-19px;border-radius:15px;background:linear-gradient(135deg,#438cff,#675bf2);color:white;font-size:22px;box-shadow:0 5px 20px #438cff55}
 }
-.nav {
-  display:flex;
-  align-items:center;
-  gap:13px;
-  width:100%;
-  padding:13px;
-  margin:4px 0;
-  border:0;
-  border-radius:10px;
-  background:transparent;
-  color:#aebbd0;
-  text-align:left;
-}
-.nav.active,.nav:hover {background:#1a2b47;color:white}
-.storage {
-  margin-top:35px;
-  padding:15px;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:13px;
-}
-.storage small {color:var(--muted)}
-.bar {height:7px;background:#283952;border-radius:9px;margin:12px 0;overflow:hidden}
-.bar div {height:100%;width:0;background:var(--blue)}
-main {min-width:0;flex:1}
-header {
-  height:76px;
-  padding:0 32px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
-  border-bottom:1px solid var(--border);
-}
-.search-wrap {flex:1;max-width:440px;position:relative}
-.search {
-  width:100%;
-  padding:12px 15px 12px 40px;
-  color:white;
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:11px;
-  outline:none;
-}
-.search:focus {border-color:var(--blue)}
-.search-icon {position:absolute;left:14px;top:10px;color:var(--muted)}
-.profile {
-  width:39px;height:39px;
-  display:grid;place-items:center;
-  border-radius:50%;
-  background:#1d3455;
-  color:#8dc1ff;font-weight:800;
-}
-.content {max-width:1250px;margin:auto;padding:34px}
-.welcome {display:flex;align-items:center;justify-content:space-between;gap:15px}
-h1 {font-size:29px;letter-spacing:-.8px;margin:0 0 7px}
-.muted {color:var(--muted);font-size:13px}
-.date {color:var(--muted);font-size:12px}
-.stats {
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:16px;
-  margin-top:29px;
-}
-.stat {
-  min-width:0;
-  padding:20px;
-  border:1px solid var(--border);
-  border-radius:15px;
-  background:linear-gradient(145deg,#14223a,#101827);
-}
-.stat-top {display:flex;align-items:center;justify-content:space-between}
-.stat-icon {
-  width:37px;height:37px;
-  display:grid;place-items:center;
-  border-radius:11px;background:#243d60;
-}
-.number {font-size:25px;font-weight:800;margin-top:15px}
-.section-head {
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;margin:37px 0 17px;
-}
-.section-head h2 {font-size:18px;margin:0}
-.section-head span {font-size:12px;color:var(--muted)}
-.files {
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:15px;
-}
-.file {
-  min-width:0;
-  padding:17px;
-  border:1px solid var(--border);
-  border-radius:15px;
-  background:var(--surface);
-  transition:.18s;
-}
-.file:hover {background:var(--surface2);border-color:#477fc7;transform:translateY(-2px)}
-.file-icon {
-  width:47px;height:47px;
-  display:grid;place-items:center;
-  border-radius:13px;
-  background:#1c2e49;
-  font-size:24px;margin-bottom:17px;
-}
-.file-name {
-  font-size:13px;font-weight:700;
-  overflow-wrap:anywhere;
-}
-.file-meta {font-size:11px;color:var(--muted);margin-top:7px}
-.empty {
-  grid-column:1/-1;
-  text-align:center;
-  padding:45px 15px;
-  color:var(--muted);
-  border:1px dashed var(--border);
-  border-radius:15px;
-}
-#fileInput {display:none}
-.mobile-nav {display:none}
-.mobile-brand {display:none}
-@media(max-width:950px) {
-  .sidebar {width:205px}
-  .content {padding:27px}
-  .files {grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media(max-width:650px) {
-  .app {display:block;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
-  .sidebar {display:none}
-  header {
-    height:65px;padding:0 17px;
-    position:sticky;top:0;z-index:5;
-    background:#080d19ed;backdrop-filter:blur(14px);
-  }
-  .mobile-brand {display:block;font-weight:850;font-size:21px;letter-spacing:-1px}
-  .mobile-brand span {color:var(--blue)}
-  .profile {width:35px;height:35px;flex-shrink:0}
-  .search-wrap {max-width:none;flex:1}
-  .search {padding:10px 10px 10px 34px;font-size:12px}
-  .search-icon {left:11px;top:9px}
-  .content {padding:25px 17px}
-  .welcome {align-items:flex-start}
-  h1 {font-size:23px}
-  .welcome .muted {font-size:12px}
-  .date {display:none}
-  .stats {
-    display:flex;
-    overflow-x:auto;
-    gap:11px;
-    margin:24px -17px 0;
-    padding:0 17px 7px;
-    scrollbar-width:none;
-  }
-  .stats::-webkit-scrollbar {display:none}
-  .stat {min-width:145px;padding:15px}
-  .stat-icon {width:32px;height:32px;font-size:14px}
-  .number {font-size:21px;margin-top:13px}
-  .stat .muted {font-size:11px}
-  .section-head {margin:27px 0 14px}
-  .section-head h2 {font-size:17px}
-  .files {grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-  .file {padding:13px;border-radius:13px}
-  .file-icon {width:40px;height:40px;font-size:21px;margin-bottom:13px}
-  .file-name {font-size:12px}
-  .file-meta {font-size:10px}
-  .mobile-nav {
-    display:flex;
-    position:fixed;
-    bottom:0;left:0;right:0;z-index:10;
-    padding:10px 8px calc(10px + env(safe-area-inset-bottom));
-    background:#101a2cf5;
-    border-top:1px solid var(--border);
-    backdrop-filter:blur(18px);
-    justify-content:space-around;
-  }
-  .mobile-nav button {
-    display:flex;flex-direction:column;align-items:center;gap:4px;
-    border:0;background:transparent;color:var(--muted);
-    font-size:10px;min-width:52px;
-  }
-  .mobile-nav button b {font-size:19px;font-weight:500}
-  .mobile-nav button.active {color:#78adff}
-  .mobile-nav .add {
-    width:43px;height:43px;margin-top:-19px;
-    border-radius:15px;background:linear-gradient(135deg,#438cff,#675bf2);
-    color:white;font-size:22px;box-shadow:0 5px 20px #438cff55;
-  }
-}
-@media(max-width:360px) {
-  .content {padding-left:12px;padding-right:12px}
-  .files {gap:8px}
-  .file {padding:11px}
-  .mobile-nav {padding-left:3px;padding-right:3px}
+@media(max-width:360px){
+  .content{padding-left:12px;padding-right:12px}
+  .files{gap:8px}
+  .file{padding:11px}
 }
 </style>
 </head>
@@ -261,7 +138,7 @@ h1 {font-size:29px;letter-spacing:-.8px;margin:0 0 7px}
     <div class="storage">
       <small>☁ Storage</small>
       <div class="bar"><div></div></div>
-      <small>Google Drive not connected</small>
+      <small>Google Drive storage will appear here</small>
     </div>
   </aside>
 
@@ -284,6 +161,17 @@ h1 {font-size:29px;letter-spacing:-.8px;margin:0 0 7px}
         <div class="date" id="today"></div>
       </div>
 
+      <div class="connection">
+        <div class="connection-row">
+          <div class="connection-info">
+            <strong>☁️ Google Drive</strong>
+            <p>Connect your Google account to start using cloud storage.</p>
+          </div>
+          <button class="connect" id="googleConnect" onclick="connectGoogle()">Connect Google Drive</button>
+        </div>
+        <div class="status" id="connectionStatus">Not connected · Local preview mode</div>
+      </div>
+
       <div class="stats">
         <div class="stat">
           <div class="stat-top"><span class="muted">Total files</span><span class="stat-icon">📁</span></div>
@@ -297,8 +185,8 @@ h1 {font-size:29px;letter-spacing:-.8px;margin:0 0 7px}
         </div>
         <div class="stat">
           <div class="stat-top"><span class="muted">Cloud status</span><span class="stat-icon">☁️</span></div>
-          <div class="number" style="font-size:17px;color:#f5bd55">Offline</div>
-          <div class="muted">Drive connection pending</div>
+          <div class="number" id="cloudStatus" style="font-size:17px;color:#f5bd55">Offline</div>
+          <div class="muted">Google Drive connection</div>
         </div>
       </div>
 
@@ -308,7 +196,7 @@ h1 {font-size:29px;letter-spacing:-.8px;margin:0 0 7px}
       </div>
 
       <div class="files" id="files">
-        <div class="empty">☁️<br><br>Your cloud space is ready.<br>Upload files to preview them here.</div>
+        <div class="empty">☁️<br><br>Your cloud space is ready.<br>Connect Drive or upload a local preview.</div>
       </div>
     </div>
   </main>
@@ -323,32 +211,69 @@ h1 {font-size:29px;letter-spacing:-.8px;margin:0 0 7px}
 </nav>
 
 <input type="file" id="fileInput" multiple>
-  
-const GOOGLE_CLIENT_ID = "254882719559-hgc0r2qnks7tqc1ae2fmavap643f61am.apps.googleusercontent.com";
 
 <script>
+const GOOGLE_CLIENT_ID = "254882719559-hgc0r2qnks7tqc1ae2fmavap643f61am.apps.googleusercontent.com";
+
+let googleAccessToken = null;
+let tokenClient = null;
+
 const selectedFiles = [];
 const input = document.getElementById("fileInput");
 
 function chooseFiles(){input.click()}
 
-function formatSize(bytes) {
-  if(!bytes) return "0 B";
+function connectGoogle(){
+  if(GOOGLE_CLIENT_ID === "254882719559-hgc0r2qnks7tqc1ae2fmavap643f61am.apps.googleusercontent.com"){
+    alert("Tambahkan Google Client ID terlebih dahulu.");
+    return;
+  }
+
+  if(!window.google || !google.accounts || !google.accounts.oauth2){
+    alert("Google Identity Services belum siap. Periksa koneksi internet lalu coba lagi.");
+    return;
+  }
+
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    scope: "https://www.googleapis.com/auth/drive.file",
+    callback: (response)=>{
+      if(response.error){
+        document.getElementById("connectionStatus").textContent =
+          "Gagal menghubungkan Google Drive.";
+        return;
+      }
+
+      googleAccessToken = response.access_token;
+      document.getElementById("connectionStatus").textContent =
+        "Connected · Google Drive access granted";
+      document.getElementById("googleConnect").textContent =
+        "✓ Connected";
+      document.getElementById("cloudStatus").textContent = "Connected";
+      document.getElementById("cloudStatus").style.color = "#57d6a0";
+    }
+  });
+
+  tokenClient.requestAccessToken();
+}
+
+function formatSize(bytes){
+  if(!bytes)return "0 B";
   const units=["B","KB","MB","GB"];
   const i=Math.min(Math.floor(Math.log(bytes)/Math.log(1024)),3);
   return (bytes/Math.pow(1024,i)).toFixed(1)+" "+units[i];
 }
 
-function fileIcon(file) {
-  if(file.type.startsWith("image/")) return "🖼️";
-  if(file.type.startsWith("video/")) return "🎬";
-  if(file.type.startsWith("audio/")) return "🎵";
-  if(file.type.includes("pdf")) return "📕";
-  if(file.type.includes("zip")) return "🗜️";
+function fileIcon(file){
+  if(file.type.startsWith("image/"))return "🖼️";
+  if(file.type.startsWith("video/"))return "🎬";
+  if(file.type.startsWith("audio/"))return "🎵";
+  if(file.type.includes("pdf"))return "📕";
+  if(file.type.includes("zip"))return "🗜️";
   return "📄";
 }
 
-function renderFiles() {
+function renderFiles(){
   const query=document.getElementById("search").value.toLowerCase();
   const list=document.getElementById("files");
   const filtered=selectedFiles.filter(f=>f.name.toLowerCase().includes(query));
@@ -359,7 +284,7 @@ function renderFiles() {
   document.getElementById("fileCount").textContent=filtered.length+" items";
 
   list.innerHTML="";
-  if(!filtered.length) {
+  if(!filtered.length){
     list.innerHTML='<div class="empty">No files found.</div>';
     return;
   }
