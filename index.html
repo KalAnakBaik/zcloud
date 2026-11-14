@@ -1,321 +1,610 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#080d19">
-<title>ZCloud — Personal Cloud</title>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<title>ZCloud</title>
+
 <style>
 :root {
   --bg:#080d19;
-  --surface:#101a2c;
-  --surface2:#17243a;
+  --panel:#101a2c;
+  --panel2:#17243a;
   --border:#22334d;
   --text:#edf3ff;
   --muted:#8494ae;
   --blue:#438cff;
 }
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif}
-button,input{font:inherit}
-button{cursor:pointer}
-.app{min-height:100dvh;display:flex}
-.sidebar{width:245px;flex-shrink:0;background:#0b1322;border-right:1px solid var(--border);padding:26px 17px}
-.logo{font-size:25px;font-weight:850;margin:0 0 36px 9px;letter-spacing:-1px}
-.logo span,.mobile-brand span{color:var(--blue)}
-.upload,.connect{
-  width:100%;border:0;padding:14px;border-radius:12px;color:white;
-  font-weight:750;background:linear-gradient(110deg,#367cff,#655cf5);
+* {box-sizing:border-box}
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,system-ui,Arial,sans-serif;
 }
-.nav-title{color:var(--muted);font-size:10px;letter-spacing:1.6px;margin:27px 10px 11px}
-.nav{display:flex;align-items:center;gap:13px;width:100%;padding:13px;margin:4px 0;border:0;border-radius:10px;background:transparent;color:#aebbd0;text-align:left}
-.nav.active,.nav:hover{background:#1a2b47;color:white}
-.storage{margin-top:35px;padding:15px;background:var(--surface);border:1px solid var(--border);border-radius:13px}
-.storage small{color:var(--muted)}
-.bar{height:7px;background:#283952;border-radius:9px;margin:12px 0;overflow:hidden}
-.bar div{height:100%;width:0;background:var(--blue)}
-main{min-width:0;flex:1}
-header{height:76px;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--border)}
-.search-wrap{flex:1;max-width:440px;position:relative}
-.search{width:100%;padding:12px 15px 12px 40px;color:white;background:var(--surface);border:1px solid var(--border);border-radius:11px;outline:none}
-.search:focus{border-color:var(--blue)}
-.search-icon{position:absolute;left:14px;top:10px;color:var(--muted)}
-.profile{width:39px;height:39px;display:grid;place-items:center;border-radius:50%;background:#1d3455;color:#8dc1ff;font-weight:800}
-.content{max-width:1250px;margin:auto;padding:34px}
-.welcome{display:flex;align-items:center;justify-content:space-between;gap:15px}
-h1{font-size:29px;letter-spacing:-.8px;margin:0 0 7px}
-.muted{color:var(--muted);font-size:13px}
-.date{color:var(--muted);font-size:12px}
-.connection{
-  margin-top:24px;padding:17px;background:var(--surface);
-  border:1px solid var(--border);border-radius:14px;
+button,input {font:inherit}
+button {cursor:pointer}
+
+/* LOGIN */
+#loginScreen {
+  min-height:100dvh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:
+    radial-gradient(ellipse at 50% 15%,#18345a 0%,transparent 55%),
+    var(--bg);
 }
-.connection-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.connection-info{min-width:0}
-.connection-info strong{font-size:14px}
-.connection-info p{font-size:12px;color:var(--muted);margin:5px 0 0}
-.connect{width:auto;padding:11px 17px;white-space:nowrap;font-size:12px}
-.status{font-size:12px;color:var(--muted);margin-top:12px}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px}
-.stat{min-width:0;padding:20px;border:1px solid var(--border);border-radius:15px;background:linear-gradient(145deg,#14223a,#101827)}
-.stat-top{display:flex;align-items:center;justify-content:space-between}
-.stat-icon{width:37px;height:37px;display:grid;place-items:center;border-radius:11px;background:#243d60}
-.number{font-size:25px;font-weight:800;margin-top:15px}
-.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:37px 0 17px}
-.section-head h2{font-size:18px;margin:0}
-.section-head span{font-size:12px;color:var(--muted)}
-.files{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
-.file{min-width:0;padding:17px;border:1px solid var(--border);border-radius:15px;background:var(--surface);transition:.18s}
-.file:hover{background:var(--surface2);border-color:#477fc7}
-.file-icon{width:47px;height:47px;display:grid;place-items:center;border-radius:13px;background:#1c2e49;font-size:24px;margin-bottom:17px}
-.file-name{font-size:13px;font-weight:700;overflow-wrap:anywhere}
-.file-meta{font-size:11px;color:var(--muted);margin-top:7px}
-.empty{grid-column:1/-1;text-align:center;padding:45px 15px;color:var(--muted);border:1px dashed var(--border);border-radius:15px}
-#fileInput{display:none}
-.mobile-nav{display:none}
-.mobile-brand{display:none}
-@media(max-width:950px){
-  .sidebar{width:205px}
-  .content{padding:27px}
-  .files{grid-template-columns:repeat(2,minmax(0,1fr))}
+.login-card {
+  width:100%;
+  max-width:410px;
+  padding:35px 27px;
+  border:1px solid var(--border);
+  border-radius:23px;
+  background:#101a2ceF;
+  box-shadow:0 25px 80px #0006;
+  text-align:center;
 }
-@media(max-width:650px){
-  .app{display:block;padding-bottom:calc(76px + env(safe-area-inset-bottom))}
-  .sidebar{display:none}
-  header{height:65px;padding:0 17px;position:sticky;top:0;z-index:5;background:#080d19ed;backdrop-filter:blur(14px)}
-  .mobile-brand{display:block;font-weight:850;font-size:21px;letter-spacing:-1px}
-  .search-wrap{max-width:none;flex:1}
-  .search{padding:10px 10px 10px 34px;font-size:12px}
-  .search-icon{left:11px;top:9px}
-  .profile{width:35px;height:35px;flex-shrink:0}
-  .content{padding:25px 17px}
-  .welcome{align-items:flex-start}
-  h1{font-size:23px}
-  .welcome .muted{font-size:12px}
-  .date{display:none}
-  .connection{padding:14px}
-  .connection-row{align-items:flex-start;flex-direction:column}
-  .connect{width:100%}
-  .stats{display:flex;overflow-x:auto;gap:11px;margin:24px -17px 0;padding:0 17px 7px;scrollbar-width:none}
-  .stats::-webkit-scrollbar{display:none}
-  .stat{min-width:145px;padding:15px}
-  .stat-icon{width:32px;height:32px;font-size:14px}
-  .number{font-size:21px;margin-top:13px}
-  .stat .muted{font-size:11px}
-  .section-head{margin:27px 0 14px}
-  .section-head h2{font-size:17px}
-  .files{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-  .file{padding:13px;border-radius:13px}
-  .file-icon{width:40px;height:40px;font-size:21px;margin-bottom:13px}
-  .file-name{font-size:12px}
-  .file-meta{font-size:10px}
-  .mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:10;padding:10px 8px calc(10px + env(safe-area-inset-bottom));background:#101a2cf5;border-top:1px solid var(--border);backdrop-filter:blur(18px);justify-content:space-around}
-  .mobile-nav button{display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:transparent;color:var(--muted);font-size:10px;min-width:52px}
-  .mobile-nav button b{font-size:19px;font-weight:500}
-  .mobile-nav button.active{color:#78adff}
-  .mobile-nav .add{width:43px;height:43px;margin-top:-19px;border-radius:15px;background:linear-gradient(135deg,#438cff,#675bf2);color:white;font-size:22px;box-shadow:0 5px 20px #438cff55}
+.brand {
+  font-size:35px;
+  font-weight:900;
+  letter-spacing:-2px;
 }
-@media(max-width:360px){
-  .content{padding-left:12px;padding-right:12px}
-  .files{gap:8px}
-  .file{padding:11px}
+.brand span {color:var(--blue)}
+.cloud-logo {
+  width:76px;
+  height:76px;
+  display:grid;
+  place-items:center;
+  margin:25px auto;
+  border-radius:23px;
+  font-size:36px;
+  background:linear-gradient(145deg,#347cff,#655cf5);
+  box-shadow:0 10px 35px #347cff55;
+}
+.login-card h1 {
+  font-size:24px;
+  margin:0 0 10px;
+}
+.description {
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.7;
+  margin-bottom:28px;
+}
+.google-button {
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  padding:15px;
+  border:1px solid #34445c;
+  border-radius:12px;
+  background:#f8faff;
+  color:#202a38;
+  font-weight:750;
+}
+.google-button:disabled {
+  opacity:.55;
+  cursor:not-allowed;
+}
+.google-icon {
+  font-size:20px;
+  font-weight:900;
+  color:#4285f4;
+}
+.login-status {
+  min-height:36px;
+  margin-top:17px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+.login-footer {
+  margin-top:28px;
+  color:#687a95;
+  font-size:11px;
+}
+
+/* DASHBOARD */
+#cloudScreen {display:none}
+.app {min-height:100dvh;display:flex}
+.sidebar {
+  width:235px;
+  flex-shrink:0;
+  background:#0b1322;
+  border-right:1px solid var(--border);
+  padding:25px 16px;
+}
+.sidebar .brand {
+  font-size:25px;
+  margin:0 0 35px 8px;
+}
+.upload {
+  width:100%;
+  border:0;
+  padding:14px;
+  border-radius:12px;
+  color:white;
+  font-weight:750;
+  background:linear-gradient(110deg,#367cff,#655cf5);
+}
+.nav-title {
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:1.5px;
+  margin:27px 10px 10px;
+}
+.nav {
+  display:block;
+  width:100%;
+  padding:13px;
+  margin:4px 0;
+  border:0;
+  border-radius:10px;
+  background:transparent;
+  color:#aebbd0;
+  text-align:left;
+}
+.nav.active,.nav:hover {
+  background:#1a2b47;
+  color:white;
+}
+main {flex:1;min-width:0}
+header {
+  height:70px;
+  padding:0 25px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  border-bottom:1px solid var(--border);
+}
+.search {
+  width:min(420px,75%);
+  padding:11px 14px;
+  color:white;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  outline:none;
+}
+.profile {
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#1d3455;
+  color:#8dc1ff;
+  font-weight:800;
+}
+.content {
+  max-width:1200px;
+  margin:auto;
+  padding:30px;
+}
+.welcome h1 {
+  font-size:27px;
+  margin:0 0 7px;
+}
+.muted {color:var(--muted);font-size:13px}
+.stats {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+  margin-top:27px;
+}
+.stat {
+  padding:19px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:linear-gradient(145deg,#14223a,#101827);
+}
+.number {
+  font-size:24px;
+  font-weight:800;
+  margin-top:12px;
+}
+.section-head {
+  display:flex;
+  justify-content:space-between;
+  margin:32px 0 15px;
+}
+.section-head h2 {font-size:18px;margin:0}
+.files {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:13px;
+}
+.file {
+  padding:15px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:var(--panel);
+  min-width:0;
+}
+.file-icon {font-size:28px;margin-bottom:13px}
+.file-name {
+  font-size:13px;
+  font-weight:700;
+  overflow-wrap:anywhere;
+}
+.file-meta {font-size:11px;color:var(--muted);margin-top:6px}
+.empty {
+  grid-column:1/-1;
+  text-align:center;
+  padding:40px 15px;
+  color:var(--muted);
+  border:1px dashed var(--border);
+  border-radius:14px;
+}
+.logout {
+  border:1px solid var(--border);
+  color:#ff9999;
+  background:transparent;
+  padding:9px 12px;
+  border-radius:9px;
+}
+#fileInput {display:none}
+.mobile-nav {display:none}
+
+@media(max-width:800px) {
+  .sidebar {width:190px}
+  .content {padding:23px}
+  .files {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px) {
+  .login-card {padding:30px 21px}
+  .app {display:block;padding-bottom:75px}
+  .sidebar {display:none}
+  header {
+    height:62px;
+    padding:0 14px;
+    position:sticky;
+    top:0;
+    background:#080d19ed;
+    z-index:5;
+  }
+  .search {width:100%;font-size:12px}
+  .content {padding:23px 15px}
+  .welcome h1 {font-size:23px}
+  .stats {
+    display:flex;
+    overflow-x:auto;
+    margin:22px -15px 0;
+    padding:0 15px 7px;
+    scrollbar-width:none;
+  }
+  .stat {min-width:140px;padding:15px}
+  .number {font-size:21px}
+  .files {grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .file {padding:12px}
+  .file-name {font-size:12px}
+  .mobile-nav {
+    display:flex;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    padding:11px 5px calc(11px + env(safe-area-inset-bottom));
+    background:#101a2cf5;
+    border-top:1px solid var(--border);
+    justify-content:space-around;
+  }
+  .mobile-nav button {
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    font-size:10px;
+  }
 }
 </style>
 </head>
+
 <body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="logo">Z<span>Cloud</span></div>
-    <button class="upload" onclick="chooseFiles()">＋ &nbsp; Upload Files</button>
-    <div class="nav-title">WORKSPACE</div>
-    <button class="nav active">⌂ <span>Overview</span></button>
-    <button class="nav">▣ <span>My Files</span></button>
-    <button class="nav">◷ <span>Recent</span></button>
-    <button class="nav">☆ <span>Favorites</span></button>
-    <button class="nav">▤ <span>Trash</span></button>
-    <div class="storage">
-      <small>☁ Storage</small>
-      <div class="bar"><div></div></div>
-      <small>Google Drive storage will appear here</small>
+
+<!-- LOGIN PAGE -->
+<section id="loginScreen">
+  <div class="login-card">
+    <div class="brand">Z<span>Cloud</span></div>
+
+    <div class="cloud-logo">☁️</div>
+
+    <h1>Welcome to ZCloud</h1>
+    <div class="description">
+      Your personal cloud storage.<br>
+      One place for all your files.
     </div>
+
+    <button class="google-button" id="loginButton"
+      onclick="connectGoogle()" disabled>
+      <span class="google-icon">G</span>
+      Continue with Google
+    </button>
+
+    <div class="login-status" id="loginStatus">
+      Menyiapkan Google Login...
+    </div>
+
+    <div class="login-footer">
+      Secure connection · Powered by Google Drive
+    </div>
+  </div>
+</section>
+
+<!-- CLOUD DASHBOARD -->
+<section id="cloudScreen">
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">Z<span>Cloud</span></div>
+    <button class="upload" onclick="chooseFiles()">＋ Upload Files</button>
+
+    <div class="nav-title">WORKSPACE</div>
+    <button class="nav active">⌂ Overview</button>
+    <button class="nav">▣ My Files</button>
+    <button class="nav">◷ Recent</button>
+    <button class="nav">☆ Favorites</button>
+    <button class="nav">▤ Trash</button>
   </aside>
 
   <main>
     <header>
-      <div class="mobile-brand">Z<span>Cloud</span></div>
-      <div class="search-wrap">
-        <span class="search-icon">⌕</span>
-        <input class="search" id="search" placeholder="Search your files..." oninput="renderFiles()">
-      </div>
-      <div class="profile">L</div>
+      <input class="search" id="search"
+        placeholder="Search files..." oninput="renderFiles()">
+      <div class="profile" id="profile">L</div>
+      <button class="logout" onclick="logout()">Logout</button>
     </header>
 
     <div class="content">
       <div class="welcome">
-        <div>
-          <h1>Good day, Linz 👋</h1>
-          <div class="muted">Everything you need, in one place.</div>
-        </div>
-        <div class="date" id="today"></div>
-      </div>
-
-      <div class="connection">
-        <div class="connection-row">
-          <div class="connection-info">
-            <strong>☁️ Google Drive</strong>
-            <p>Connect your Google account to start using cloud storage.</p>
-          </div>
-          <button class="connect" id="googleConnect" onclick="connectGoogle()">Connect Google Drive</button>
-        </div>
-        <div class="status" id="connectionStatus">Not connected · Local preview mode</div>
+        <h1 id="welcomeTitle">Welcome 👋</h1>
+        <div class="muted">Your personal cloud space.</div>
       </div>
 
       <div class="stats">
         <div class="stat">
-          <div class="stat-top"><span class="muted">Total files</span><span class="stat-icon">📁</span></div>
+          <div class="muted">Total files</div>
           <div class="number" id="totalFiles">0</div>
-          <div class="muted">Files in this session</div>
         </div>
         <div class="stat">
-          <div class="stat-top"><span class="muted">Storage used</span><span class="stat-icon">💾</span></div>
+          <div class="muted">Storage used</div>
           <div class="number" id="storageUsed">0 B</div>
-          <div class="muted">Local preview only</div>
         </div>
         <div class="stat">
-          <div class="stat-top"><span class="muted">Cloud status</span><span class="stat-icon">☁️</span></div>
-          <div class="number" id="cloudStatus" style="font-size:17px;color:#f5bd55">Offline</div>
-          <div class="muted">Google Drive connection</div>
+          <div class="muted">Cloud status</div>
+          <div class="number" style="font-size:17px;color:#55d6a0">
+            Connected
+          </div>
         </div>
       </div>
 
       <div class="section-head">
-        <h2>Your files</h2>
-        <span id="fileCount">0 items</span>
+        <h2>Your Files</h2>
+        <span class="muted" id="fileCount">0 items</span>
       </div>
 
       <div class="files" id="files">
-        <div class="empty">☁️<br><br>Your cloud space is ready.<br>Connect Drive or upload a local preview.</div>
+        <div class="empty">
+          ☁️<br><br>
+          Your cloud space is ready.
+        </div>
       </div>
     </div>
   </main>
 </div>
 
 <nav class="mobile-nav">
-  <button class="active"><b>⌂</b>Home</button>
-  <button><b>▣</b>Files</button>
-  <button class="add" onclick="chooseFiles()">＋</button>
-  <button><b>◷</b>Recent</button>
-  <button><b>☆</b>Saved</button>
+  <button>⌂<br>Home</button>
+  <button>▣<br>Files</button>
+  <button onclick="chooseFiles()">＋<br>Upload</button>
+  <button>◷<br>Recent</button>
+  <button>☆<br>Saved</button>
 </nav>
+</section>
 
 <input type="file" id="fileInput" multiple>
 
 <script>
+/* GOOGLE CONFIGURATION */
 const GOOGLE_CLIENT_ID = "254882719559-hgc0r2qnks7tqc1ae2fmavap643f61am.apps.googleusercontent.com";
+const GOOGLE_SCOPE = "https://www.googleapis.com/auth/drive.file";
 
-let googleAccessToken = null;
 let tokenClient = null;
+let googleAccessToken = null;
+let gisReady = false;
+let selectedFiles = [];
 
-const selectedFiles = [];
-const input = document.getElementById("fileInput");
+const loginButton = document.getElementById("loginButton");
+const loginStatus = document.getElementById("loginStatus");
 
-function chooseFiles(){input.click()}
+function googleReady() {
+  gisReady = true;
+  loginButton.disabled = false;
+  loginStatus.textContent = "Google Login siap digunakan.";
+}
 
-function connectGoogle(){
-  if(GOOGLE_CLIENT_ID === "254882719559-hgc0r2qnks7tqc1ae2fmavap643f61am.apps.googleusercontent.com"){
-    alert("Tambahkan Google Client ID terlebih dahulu.");
+function connectGoogle() {
+  if (GOOGLE_CLIENT_ID === "254882719559-hgc0r2qnks7tqc1ae2fmavap643f61am.apps.googleusercontent.com") {
+    loginStatus.textContent =
+      "Client ID belum diisi. Masukkan Client ID Google Cloud.";
     return;
   }
 
-  if(!window.google || !google.accounts || !google.accounts.oauth2){
-    alert("Google Identity Services belum siap. Periksa koneksi internet lalu coba lagi.");
+  if (!gisReady || !window.google?.accounts?.oauth2) {
+    loginStatus.textContent =
+      "Google belum siap. Tunggu sebentar lalu coba lagi.";
     return;
   }
 
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: GOOGLE_CLIENT_ID,
-    scope: "https://www.googleapis.com/auth/drive.file",
-    callback: (response)=>{
-      if(response.error){
-        document.getElementById("connectionStatus").textContent =
-          "Gagal menghubungkan Google Drive.";
-        return;
+  loginButton.disabled = true;
+  loginStatus.textContent = "Menghubungkan ke Google...";
+
+  try {
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: GOOGLE_SCOPE,
+
+      callback: (response) => {
+        loginButton.disabled = false;
+
+        if (response.error) {
+          loginStatus.textContent =
+            "Login gagal: " + response.error;
+          return;
+        }
+
+        if (!response.access_token) {
+          loginStatus.textContent =
+            "Google tidak memberikan access token.";
+          return;
+        }
+
+        googleAccessToken = response.access_token;
+
+        // Dashboard hanya dibuka setelah izin berhasil diberikan.
+        openCloud();
+      },
+
+      error_callback: (error) => {
+        loginButton.disabled = false;
+        loginStatus.textContent =
+          "Popup Google gagal dibuka: " +
+          (error.type || "Coba lagi.");
       }
+    });
 
-      googleAccessToken = response.access_token;
-      document.getElementById("connectionStatus").textContent =
-        "Connected · Google Drive access granted";
-      document.getElementById("googleConnect").textContent =
-        "✓ Connected";
-      document.getElementById("cloudStatus").textContent = "Connected";
-      document.getElementById("cloudStatus").style.color = "#57d6a0";
-    }
-  });
+    tokenClient.requestAccessToken({
+      prompt: "select_account"
+    });
 
-  tokenClient.requestAccessToken();
+  } catch (error) {
+    loginButton.disabled = false;
+    loginStatus.textContent =
+      "Terjadi kesalahan: " + error.message;
+  }
 }
 
-function formatSize(bytes){
-  if(!bytes)return "0 B";
-  const units=["B","KB","MB","GB"];
-  const i=Math.min(Math.floor(Math.log(bytes)/Math.log(1024)),3);
-  return (bytes/Math.pow(1024,i)).toFixed(1)+" "+units[i];
+function openCloud() {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("cloudScreen").style.display = "block";
+
+  document.getElementById("loginButton").disabled = false;
+  document.getElementById("cloudStatus");
+
+  document.getElementById("welcomeTitle").textContent =
+    "Welcome to ZCloud 👋";
+
+  renderFiles();
 }
 
-function fileIcon(file){
-  if(file.type.startsWith("image/"))return "🖼️";
-  if(file.type.startsWith("video/"))return "🎬";
-  if(file.type.startsWith("audio/"))return "🎵";
-  if(file.type.includes("pdf"))return "📕";
-  if(file.type.includes("zip"))return "🗜️";
+function logout() {
+  if (googleAccessToken && window.google?.accounts?.oauth2) {
+    google.accounts.oauth2.revoke(googleAccessToken, () => {});
+  }
+
+  googleAccessToken = null;
+  tokenClient = null;
+  selectedFiles = [];
+
+  document.getElementById("cloudScreen").style.display = "none";
+  document.getElementById("loginScreen").style.display = "flex";
+
+  loginStatus.textContent = "Kamu sudah logout.";
+  renderFiles();
+}
+
+function chooseFiles() {
+  document.getElementById("fileInput").click();
+}
+
+function formatSize(bytes) {
+  if (!bytes) return "0 B";
+
+  const units = ["B","KB","MB","GB"];
+  const i = Math.min(
+    Math.floor(Math.log(bytes) / Math.log(1024)), 3
+  );
+
+  return (bytes / Math.pow(1024, i)).toFixed(1) + " " + units[i];
+}
+
+function fileIcon(file) {
+  if (file.type.startsWith("image/")) return "🖼️";
+  if (file.type.startsWith("video/")) return "🎬";
+  if (file.type.startsWith("audio/")) return "🎵";
+  if (file.type.includes("pdf")) return "📕";
   return "📄";
 }
 
-function renderFiles(){
-  const query=document.getElementById("search").value.toLowerCase();
-  const list=document.getElementById("files");
-  const filtered=selectedFiles.filter(f=>f.name.toLowerCase().includes(query));
-  const total=selectedFiles.reduce((sum,f)=>sum+f.size,0);
+function renderFiles() {
+  const list = document.getElementById("files");
+  if (!list) return;
 
-  document.getElementById("totalFiles").textContent=selectedFiles.length;
-  document.getElementById("storageUsed").textContent=formatSize(total);
-  document.getElementById("fileCount").textContent=filtered.length+" items";
+  const search = document.getElementById("search").value.toLowerCase();
 
-  list.innerHTML="";
-  if(!filtered.length){
-    list.innerHTML='<div class="empty">No files found.</div>';
+  const filtered = selectedFiles.filter(file =>
+    file.name.toLowerCase().includes(search)
+  );
+
+  const total = selectedFiles.reduce(
+    (sum, file) => sum + file.size, 0
+  );
+
+  document.getElementById("totalFiles").textContent =
+    selectedFiles.length;
+
+  document.getElementById("storageUsed").textContent =
+    formatSize(total);
+
+  document.getElementById("fileCount").textContent =
+    filtered.length + " items";
+
+  list.innerHTML = "";
+
+  if (!filtered.length) {
+    list.innerHTML =
+      '<div class="empty">No files found.</div>';
     return;
   }
 
-  filtered.forEach(file=>{
-    const card=document.createElement("div");
-    card.className="file";
-    const icon=document.createElement("div");
-    icon.className="file-icon";
-    icon.textContent=fileIcon(file);
-    const name=document.createElement("div");
-    name.className="file-name";
-    name.textContent=file.name;
-    const meta=document.createElement("div");
-    meta.className="file-meta";
-    meta.textContent=formatSize(file.size);
-    card.append(icon,name,meta);
+  filtered.forEach(file => {
+    const card = document.createElement("div");
+    card.className = "file";
+
+    const icon = document.createElement("div");
+    icon.className = "file-icon";
+    icon.textContent = fileIcon(file);
+
+    const name = document.createElement("div");
+    name.className = "file-name";
+    name.textContent = file.name;
+
+    const meta = document.createElement("div");
+    meta.className = "file-meta";
+    meta.textContent = formatSize(file.size);
+
+    card.append(icon, name, meta);
     list.appendChild(card);
   });
 }
 
-input.addEventListener("change",e=>{
-  selectedFiles.push(...Array.from(e.target.files));
+document.getElementById("fileInput").addEventListener("change", event => {
+  selectedFiles.push(...Array.from(event.target.files));
   renderFiles();
-  input.value="";
+  event.target.value = "";
 });
-
-document.getElementById("today").textContent=
-  new Date().toLocaleDateString("id-ID",{
-    weekday:"long",day:"numeric",month:"long",year:"numeric"
-  });
 </script>
+
+<script
+  src="https://accounts.google.com/gsi/client"
+  async defer
+  onload="googleReady()">
+</script>
+
 </body>
 </html>
